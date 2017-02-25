@@ -7,17 +7,17 @@
     android:focusableInTouchMode="false">
 
     <EditText
+        android:id="@+id/edittext_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:drawableLeft="@android:drawable/ic_menu_search"
         android:background="@android:drawable/editbox_background_normal"
-        android:id="@+id/editText"
         android:hint="@string/searchbox_hint"/>
 
     <Button
+        android:id="@+id/button_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
-        android:id="@+id/button" />
+        android:text="Search" />
 </LinearLayout>
