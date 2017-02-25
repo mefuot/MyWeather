@@ -17,6 +17,15 @@ public class WeatherModel {
     public WeatherModel() {
     }
 
+    /**
+     * WeatherModel
+     *
+     * @param cityName Name of city.
+     * @param iconUrl Url of icon showing current weather.
+     * @param time Observation Time.
+     * @param humidity Humidity value.
+     * @param weatherDescription Weather description.
+     */
     public WeatherModel(String cityName, String iconUrl, String time, String humidity, String weatherDescription) {
         this.cityName = cityName;
         this.iconUrl = iconUrl;
