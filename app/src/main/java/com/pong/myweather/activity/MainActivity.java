@@ -31,7 +31,11 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
     @Override
     public void onOpenWeatherDetail(WeatherModel model) {
-        openWeatherDetailFragment(model);
+        if(model != null){
+            openWeatherDetailFragment(model);
+        }else{
+            throw new NullPointerException("WeatherModel can't ne null in WeatherDetailFragment");
+        }
     }
 
     private void openWeatherDetailFragment(WeatherModel model) {
