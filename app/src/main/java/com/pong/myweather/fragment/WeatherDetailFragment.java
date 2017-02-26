@@ -3,32 +3,31 @@ package com.pong.myweather.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
-import android.text.method.TextKeyListener;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.pong.myweather.R;
 import com.pong.myweather.model.WeatherModel;
+import com.pong.myweather.presenter.WeatherDetailPresenter;
 import com.pong.myweather.utils.Utils;
+import com.pong.myweather.view.WeatherDetailView;
 
 import org.parceler.Parcels;
-
-import static android.text.method.TextKeyListener.Capitalize.WORDS;
 
 /**
  * Created by USER on 25/2/2560.
  */
 
-public class WeatherDetailFragment extends Fragment {
-    WeatherModel model;
+public class WeatherDetailFragment extends Fragment implements WeatherDetailView {
+    private WeatherModel model;
+    private WeatherDetailPresenter presenter;
+    private SwipeRefreshLayout swipLayout;
 
     public static WeatherDetailFragment newInstance(WeatherModel model) {
         WeatherDetailFragment fm = new WeatherDetailFragment();
@@ -53,8 +52,16 @@ public class WeatherDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        presenter = new WeatherDetailPresenter(this);
         setWeatherDataToDisplay(view,model);
+
+        swipLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_weatherdetail_container);
+        swipLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.refreshWeatherData(getActivity(),model.getCityName());
+            }
+        });
     }
 
     private void setWeatherDataToDisplay(final View view,final WeatherModel model){
@@ -73,5 +80,19 @@ public class WeatherDetailFragment extends Fragment {
                 .fitCenter()
                 .error(android.R.drawable.ic_dialog_alert)
                 .into(((ImageView) view.findViewById(R.id.img_weatherdetail_weathericon)));
+    }
+
+    @Override
+    public void onUpdateWeatherData(WeatherModel model) {
+        this.model = model;
+        setWeatherDataToDisplay(getView(),model);
+        Toast.makeText(getActivity(),"Weather updated!",Toast.LENGTH_SHORT).show();
+        if(swipLayout != null) swipLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onFailedToUpdateWeatherData() {
+        Utils.showAlertPopup(getActivity(),getResources().getString(R.string.error_connection));
+        if(swipLayout != null) swipLayout.setRefreshing(false);
     }
 }
