@@ -5,16 +5,23 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.pong.myweather.R;
 import com.pong.myweather.model.WeatherModel;
+import com.pong.myweather.utils.Utils;
 
 import org.parceler.Parcels;
+
+import static android.text.method.TextKeyListener.Capitalize.WORDS;
 
 /**
  * Created by USER on 25/2/2560.
@@ -35,7 +42,6 @@ public class WeatherDetailFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = Parcels.unwrap(getArguments().getParcelable("model"));
-//        Log.d("myApp",model.toString());
     }
 
     @Nullable
@@ -48,14 +54,24 @@ public class WeatherDetailFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView textCityName = (TextView) view.findViewById(R.id.text_weatherdetail_cityname);
-        TextView textTime = (TextView) view.findViewById(R.id.text_weatherdetail_time);
-        TextView textHumility = (TextView) view.findViewById(R.id.text_weatherdetail_humidity);
-        TextView textWeatherDescription = (TextView) view.findViewById(R.id.text_weatherdetail_weatherdescription);
+        setWeatherDataToDisplay(view,model);
+    }
 
-        textCityName.setText(model.getCityName());
-        textTime.setText(model.getTime());
-        textHumility.setText("Humidity "+model.getHumidity());
-        textWeatherDescription.setText(model.getWeatherDescription());
+    private void setWeatherDataToDisplay(final View view,final WeatherModel model){
+
+        ((TextView) view.findViewById(R.id.text_weatherdetail_cityname))
+                .setText(Utils.capitalize(model.getCityName()));
+        ((TextView) view.findViewById(R.id.text_weatherdetail_time))
+                .setText(model.getTime());
+        ((TextView) view.findViewById(R.id.text_weatherdetail_humidity))
+                .setText("Humidity "+model.getHumidity());
+        ((TextView) view.findViewById(R.id.text_weatherdetail_weatherdescription))
+                .setText(model.getWeatherDescription());
+
+        Glide.with(getContext())
+                .load(model.getIconUrl())
+                .fitCenter()
+                .error(android.R.drawable.ic_dialog_alert)
+                .into(((ImageView) view.findViewById(R.id.img_weatherdetail_weathericon)));
     }
 }
