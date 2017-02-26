@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -24,6 +25,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
 /**
@@ -32,6 +35,7 @@ import retrofit2.http.Query;
 
 public class WeatherService {
     private interface APIService {
+        @Headers("Cache-Control: max-age=0, no-cache, no-store")
         @GET("free/v1/weather.ashx?fx=yes&format=json")
         Call<WeatherResponseModel> getWeatherData(@Query("key") String key, @Query("q") String cityName);
     }
@@ -40,7 +44,9 @@ public class WeatherService {
         Interceptor interceptor = new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
+                Request request =  chain.request().newBuilder()
+                                .cacheControl(new CacheControl.Builder().noCache().build())
+                                .build();
 
                 okhttp3.Response response = chain.proceed(request);
                 String rawJson = response.body().string();
@@ -55,8 +61,8 @@ public class WeatherService {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(100, TimeUnit.SECONDS)
                 .readTimeout(100, TimeUnit.SECONDS)
-                .addInterceptor(interceptor).build();
-
+                .addInterceptor(interceptor)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constant.BASE_URL)
@@ -72,9 +78,7 @@ public class WeatherService {
         call.enqueue(new Callback<WeatherResponseModel>() {
             @Override
             public void onResponse(Call<WeatherResponseModel> call, Response<WeatherResponseModel> response) {
-
                 if (response.isSuccessful() && response.body().getData().getError() == null) {
-//                    Log.d("myApp", response.body().getData().toString());
                     WeatherResponseModel.DataBean data = response.body().getData();
                     WeatherModel model = new WeatherModel(data.getRequest().get(0).getQuery(), // City Name
                             data.getCurrentCondition().get(0).getWeatherIconUrl().get(0).getValue(), // IconUrl
