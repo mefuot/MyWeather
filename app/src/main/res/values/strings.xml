@@ -5,4 +5,5 @@
 
     <string name="error_connection_timeout">Connection timeout. Please try again later.</string>
     <string name="error_connection">Connection error. Please try again later.</string>
+    <string name="weatherdetail_pull_to_refresh">pull down to refresh</string>
 </resources>
