@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.pong.myweather.R;
 import com.pong.myweather.model.WeatherModel;
 import com.pong.myweather.presenter.SearchPresenter;
+import com.pong.myweather.utils.Utils;
 import com.pong.myweather.view.SearchView;
 
 /**
@@ -54,7 +55,7 @@ public class SearchFragment extends Fragment implements SearchView {
                     hideKeyboard();
                     presenter.loadWeatherData(getContext(), searchEditText.getText().toString());
                 } else {
-                    showAlertPopup("Please Enter City name.");
+                    Utils.showAlertPopup(getActivity(),"Please Enter City name.");
                 }
             }
         });
@@ -69,20 +70,7 @@ public class SearchFragment extends Fragment implements SearchView {
     @Override
     public void onFailedLoadWeatherData(String message) {
         dismissSpinner();
-        showAlertPopup(message);
-    }
-
-    private void showAlertPopup(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(message);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+        Utils.showAlertPopup(getActivity(),message);
     }
 
     private void showSpinner() {
