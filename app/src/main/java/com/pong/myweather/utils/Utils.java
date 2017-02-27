@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class Utils {
     public static String capitalize(final String str) {
+        if(str.isEmpty()) return str;
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
@@ -31,6 +32,8 @@ public class Utils {
     }
 
     public static boolean containsIgnoreCase(ArrayList<String> ary, String str) {
+        if(ary == null) return false;
+
         for (String string : ary) {
             if (string.equalsIgnoreCase(str)) return true;
         }
