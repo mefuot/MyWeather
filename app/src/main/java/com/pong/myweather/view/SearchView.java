@@ -7,6 +7,6 @@ import com.pong.myweather.model.WeatherModel;
  */
 
 public interface SearchView {
-    void onSuccessLoadWeatherData(WeatherModel model);
+    void onSuccessLoadWeatherData(final WeatherModel model);
     void onFailedLoadWeatherData(String message);
 }
