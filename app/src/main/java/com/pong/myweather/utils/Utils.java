@@ -30,11 +30,9 @@ public class Utils {
         builder.show();
     }
 
-    static boolean containsIgnoreCase(ArrayList<String> ary, String str) {
+    public static boolean containsIgnoreCase(ArrayList<String> ary, String str) {
         for (String string : ary) {
-            if (string.equalsIgnoreCase(str)) {
-                return true;
-            }
+            if (string.equalsIgnoreCase(str)) return true;
         }
         return false;
     }
