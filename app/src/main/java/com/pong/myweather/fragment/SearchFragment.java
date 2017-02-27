@@ -2,21 +2,24 @@ package com.pong.myweather.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.pong.myweather.R;
 import com.pong.myweather.model.WeatherModel;
 import com.pong.myweather.presenter.SearchPresenter;
+import com.pong.myweather.singleton.CityManager;
 import com.pong.myweather.utils.Utils;
 import com.pong.myweather.view.SearchView;
 
@@ -29,8 +32,8 @@ public class SearchFragment extends Fragment implements SearchView {
         void onOpenWeatherDetail(WeatherModel model);
     }
 
-    private EditText searchEditText;
     private SearchPresenter presenter;
+    private AutoCompleteTextView searchAutoCompleteText;
     private ProgressDialog progress;
 
     @Nullable
@@ -44,33 +47,78 @@ public class SearchFragment extends Fragment implements SearchView {
         super.onViewCreated(view, savedInstanceState);
 
         presenter = new SearchPresenter(this);
-        searchEditText = (EditText) view.findViewById(R.id.edittext_search);
+        searchAutoCompleteText = (AutoCompleteTextView) view.findViewById(R.id.edittext_search);
+        searchAutoCompleteText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+        setAutoCompleteAdapter();
+        setAutoCompleteListener();
 
         Button searchButton = (Button) view.findViewById(R.id.button_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!searchEditText.getText().toString().isEmpty()) {
-                    showSpinner();
-                    hideKeyboard();
-                    presenter.loadWeatherData(getContext(), searchEditText.getText().toString());
+                if (!searchAutoCompleteText.getText().toString().isEmpty()) {
+                    onSearchClicked(searchAutoCompleteText.getText().toString());
                 } else {
-                    Utils.showAlertPopup(getActivity(),"Please Enter City name.");
+                    Utils.showAlertPopup(getActivity(), "Please Enter City name.");
                 }
             }
         });
     }
 
+    private void setAutoCompleteAdapter() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                CityManager.getInstance(getActivity()).getAllCityList());
+
+        if (searchAutoCompleteText != null) {
+            searchAutoCompleteText.setAdapter(adapter);
+        }else throw new NullPointerException("searchAutoCompleteText can't be null");
+    }
+
+    private void setAutoCompleteListener() {
+        if (searchAutoCompleteText != null) {
+            searchAutoCompleteText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) searchAutoCompleteText.showDropDown();
+                }
+            });
+
+            searchAutoCompleteText.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    searchAutoCompleteText.showDropDown();
+                    return false;
+                }
+            });
+
+            searchAutoCompleteText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    onSearchClicked(searchAutoCompleteText.getText().toString());
+                }
+            });
+        }else throw new NullPointerException("searchAutoCompleteText can't be null");
+    }
+
+    private void onSearchClicked(String cityName) {
+        showSpinner();
+        hideKeyboard();
+        presenter.loadWeatherData(getContext(), cityName);
+    }
+
     @Override
-    public void onSuccessLoadWeatherData(WeatherModel model) {
+    public void onSuccessLoadWeatherData(final WeatherModel model) {
         dismissSpinner();
         ((OnSearchWeatherListener) getActivity()).onOpenWeatherDetail(model);
+        CityManager.getInstance(getActivity()).addCityName(searchAutoCompleteText.getText().toString());
     }
 
     @Override
     public void onFailedLoadWeatherData(String message) {
         dismissSpinner();
-        Utils.showAlertPopup(getActivity(),message);
+        Utils.showAlertPopup(getActivity(), message);
     }
 
     private void showSpinner() {
@@ -78,9 +126,8 @@ public class SearchFragment extends Fragment implements SearchView {
             progress = new ProgressDialog(getActivity());
             progress.setTitle("Loading");
             progress.setMessage("Wait while loading...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.setCancelable(false);
         }
-
         progress.show();
     }
 

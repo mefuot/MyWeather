@@ -3,16 +3,17 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/padding_normal"
-    android:focusable="false"
-    android:focusableInTouchMode="false">
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/edittext_search"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:drawableLeft="@android:drawable/ic_menu_search"
         android:background="@android:drawable/editbox_background_normal"
+        android:maxLines="1"
         android:hint="@string/searchbox_hint"/>
 
     <Button
