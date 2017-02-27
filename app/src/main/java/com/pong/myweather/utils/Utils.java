@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by USER on 26/2/2560.
  */
 
 public class Utils {
-    public static String capitalize(final String str){
-        return str.substring(0,1).toUpperCase() + str.substring(1);
+    public static String capitalize(final String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     public static void showAlertPopup(Context context, String message) {
@@ -25,5 +28,14 @@ public class Utils {
         });
 
         builder.show();
+    }
+
+    static boolean containsIgnoreCase(ArrayList<String> ary, String str) {
+        for (String string : ary) {
+            if (string.equalsIgnoreCase(str)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
