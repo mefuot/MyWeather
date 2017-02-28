@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_weatherdetail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_normal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageView
+                android:id="@+id/img_weatherdetail_weathericon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/padding_normal"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:id="@+id/text_weatherdetail_cityname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="City Name"
+                android:textSize="@dimen/font_large" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_weatherdetail_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="time"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:id="@+id/text_weatherdetail_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="humidity"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:id="@+id/text_weatherdetail_weatherdescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="weather description"
+            android:textSize="@dimen/font_normal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom|center"
+            android:gravity="center"
+            android:text="@string/weatherdetail_pull_to_refresh"
+            android:textColor="@color/light_gray"/>
+
+    </LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
