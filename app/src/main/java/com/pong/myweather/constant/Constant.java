@@ -6,4 +6,5 @@ package com.pong.myweather.constant;
 
 public class Constant {
     public static final String BASE_URL = "http://api.worldweatheronline.com/";
+    public static final String API_KEY = "vzkjnx2j5f88vyn5dhvvqkzc";
 }
