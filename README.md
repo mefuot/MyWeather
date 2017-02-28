@@ -12,5 +12,9 @@ Enter city name at search box to find out that city weather detail (time, humidi
 The latest 10 found cities will be on sugggestion. 
 
 ![main page](https://github.com/mefuot/MyWeather/blob/master/screenshot/weather_1.JPG)
+
+
 ![main page](https://github.com/mefuot/MyWeather/blob/master/screenshot/weather_2.JPG)
+
+
 ![main page](https://github.com/mefuot/MyWeather/blob/master/screenshot/weather_3.JPG)
